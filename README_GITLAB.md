@@ -72,13 +72,36 @@ NUMERO_PRUEBA=+tu_numero_prueba
    - Agrega un nuevo sender
    - Sigue el proceso de verificación
 
-### 5. Ejecutar la Aplicación
+### 5. Reparar Base de Datos de Usuarios
+
+**IMPORTANTE**: Si encuentras el error "no hay usuario" al intentar iniciar sesión, ejecuta:
+
+```bash
+python reparar_base_datos_usuarios.py
+```
+
+Este script creará los usuarios por defecto:
+- **admin** / admin123 (Administrador)
+- **jperez** / 123456 (Asesor)
+- **carlos** / 123456 (Programador)
+
+### 6. Ejecutar la Aplicación
 
 ```bash
 python SISTEMA_UNIFICADO_FINAL.py
 ```
 
 La aplicación estará disponible en: `http://localhost:5000`
+
+### 7. Instalación Automática (Alternativa)
+
+Para una instalación completa automática:
+
+```bash
+python instalar_y_reparar.py
+```
+
+Este script instalará dependencias, reparará la base de datos y configurará todo automáticamente.
 
 ## 📁 Estructura del Proyecto
 
