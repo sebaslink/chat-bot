@@ -20,6 +20,8 @@ backups/
 # Archivos de logs
 *.log
 logs/
+sistema_unificado.log
+chatmasivo.log
 
 # Archivos de Python
 __pycache__/
@@ -62,10 +64,14 @@ Thumbs.db
 *.swp
 *.swo
 
-# Archivos de deployment
+# Archivos de deployment y backups
 *.zip
 *.tar.gz
 *.rar
+backups/
+railway_deploy/
+render_deploy/
+ChatbotInteligente_v1.0/
 
 # Archivos de uploads (pueden contener datos sensibles)
 uploads/
@@ -74,3 +80,23 @@ static/uploads/
 # Archivos de configuración local
 config_local.py
 local_config.py
+
+# Archivos de test y desarrollo
+test_*.py
+*_test.py
+*_debug.py
+*_simple.py
+*_completo.py
+*_standalone.py
+
+# Archivos de documentación duplicados
+ACTUALIZACION_*.md
+DESPLEGAR_*.md
+README_DESPLIEGUE.md
+README_FINAL.md
+RESUMEN_*.md
+RESUMEN_DESPLIEGUE.md
+RESUMEN_RENDER.md
+
+# Scripts de deploy obsoletos
+subir_a_*.py
