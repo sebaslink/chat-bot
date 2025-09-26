@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Unificado - Chatbot y Chat Masivo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .tabs { display: flex; margin-bottom: 30px; border-bottom: 2px solid #e9ecef; }
+        .tab { padding: 15px 30px; cursor: pointer; border: none; background: none; font-size: 1.1em; color: #6c757d; border-bottom: 3px solid transparent; transition: all 0.3s ease; }
+        .tab.active { color: #4facfe; border-bottom-color: #4facfe; }
+        .tab-content { display: none; padding: 30px; }
+        .tab-content.active { display: block; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        .form-control { width: 100%; padding: 12px 15px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 1em; transition: border-color 0.3s ease; }
+        .form-control:focus { outline: none; border-color: #4facfe; }
+        .btn { padding: 12px 25px; border: none; border-radius: 10px; font-size: 1em; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4); }
+        .btn-success { background: linear-gradient(135deg, #51cf66 0%, #40c057 100%); color: white; }
+        .btn-danger { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%); color: white; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px solid #e9ecef; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border-left: 4px solid #4facfe; }
+        .stat-card h4 { font-size: 2em; margin: 0; color: #4facfe; }
+        .stat-card p { margin: 5px 0 0 0; color: #666; }
+        .chat-container { display: flex; flex-direction: column; height: 500px; border: 1px solid #e9ecef; border-radius: 15px; overflow: hidden; }
+        .chat-header { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 15px 20px; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 20px; background: #f8f9fa; }
+        .message { display: flex; gap: 10px; margin-bottom: 15px; }
+        .user-message { justify-content: flex-end; }
+        .bot-message { justify-content: flex-start; }
+        .message-content { max-width: 70%; padding: 12px 16px; border-radius: 18px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .user-message .message-content { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .chat-input-container { background: white; padding: 20px; border-top: 1px solid #e9ecef; }
+        .chat-input-wrapper { display: flex; gap: 10px; }
+        .chat-input { flex: 1; padding: 12px 16px; border: 2px solid #e9ecef; border-radius: 25px; font-size: 1em; outline: none; }
+        .chat-input:focus { border-color: #4facfe; }
+        .chat-send-btn { width: 45px; height: 45px; border: none; border-radius: 50%; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; }
+        .alert { padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-robot"></i> Sistema Unificado</h1>
+            <p>Chatbot Inteligente + Chat Masivo Integrado</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('chatbot-tab')">
+                <i class="fas fa-robot"></i> Chatbot
+            </button>
+            <button class="tab" onclick="showTab('contacts-tab')">
+                <i class="fas fa-users"></i> Contactos
+            </button>
+            <button class="tab" onclick="showTab('messages-tab')">
+                <i class="fas fa-paper-plane"></i> Mensajes Masivos
+            </button>
+            <button class="tab" onclick="showTab('documents-tab')">
+                <i class="fas fa-file-upload"></i> Documentos
+            </button>
+        </div>
+
+        <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Tab Chatbot -->
+        <div id="chatbot-tab" class="tab-content active">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h3><i class="fas fa-robot"></i> Chatbot Inteligente</h3>
+                    <p>{{ stats.total_documentos }} documentos cargados</p>
+                </div>
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            ¡Hola! 👋 Soy tu chatbot inteligente. Puedo ayudarte con información basada en los documentos que hayas cargado. ¿En qué puedo ayudarte?
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <div class="chat-input-wrapper">
+                        <input type="text" id="chat-input" class="chat-input" placeholder="Escribe tu pregunta aquí..." onkeypress="handleKeyPress(event)">
+                        <button class="chat-send-btn" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Contactos -->
+        <div id="contacts-tab" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fas fa-user-plus"></i> Agregar Contacto</h3>
+                    <form method="POST" action="/add_contact">
+                        <div class="form-group">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" id="nombre" name="nombre" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="apellido">Apellido:</label>
+                            <input type="text" id="apellido" name="apellido" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono">Teléfono:</label>
+                            <input type="text" id="telefono" name="telefono" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="carrera">Carrera:</label>
+                            <input type="text" id="carrera" name="carrera" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="grupo">Grupo:</label>
+                            <select id="grupo" name="grupo" class="form-control">
+                                {% for grupo in grupos %}
+                                <option value="{{ grupo[1] }}">{{ grupo[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Agregar Contacto
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-users"></i> Lista de Contactos ({{ contactos|length }})</h3>
+                    {% if contactos %}
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Teléfono</th>
+                                        <th>Carrera</th>
+                                        <th>Grupo</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for contacto in contactos %}
+                                    <tr>
+                                        <td>{{ contacto[1] }} {{ contacto[2] or '' }}</td>
+                                        <td>{{ contacto[3] }}</td>
+                                        <td>{{ contacto[4] or '-' }}</td>
+                                        <td>{{ contacto[5] or 'General' }}</td>
+                                        <td>
+                                            <button class="btn btn-danger" onclick="deleteContact({{ contacto[0] }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p>No hay contactos registrados.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Mensajes Masivos -->
+        <div id="messages-tab" class="tab-content">
+            <div class="card">
+                <h3><i class="fas fa-paper-plane"></i> Envío de Mensajes Masivos</h3>
+                <form method="POST" action="/send_mass_messages">
+                    <div class="form-group">
+                        <label for="grupo">Grupo:</label>
+                        <select id="grupo" name="grupo" class="form-control">
+                            <option value="">Todos los contactos</option>
+                            {% for grupo in grupos %}
+                            <option value="{{ grupo[1] }}">{{ grupo[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mensaje">Mensaje:</label>
+                        <textarea id="mensaje" name="mensaje" class="form-control" rows="4" placeholder="Escribe tu mensaje aquí. El chatbot lo personalizará automáticamente para cada contacto." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-paper-plane"></i> Enviar Mensajes Masivos
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tab Documentos -->
+        <div id="documents-tab" class="tab-content">
+            <div class="card">
+                <h3><i class="fas fa-file-upload"></i> Cargar Documentos</h3>
+                <form method="POST" action="/upload_document" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="file">Seleccionar archivo:</label>
+                        <input type="file" id="file" name="file" class="form-control" accept=".pdf,.docx,.txt,.md" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Título del documento:</label>
+                        <input type="text" id="title" name="title" class="form-control" placeholder="Título del documento">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Cargar Documento
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            // Ocultar todos los tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Mostrar tab seleccionado
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Agregar mensaje del usuario
+            addMessage(message, true);
+            input.value = '';
+            
+            // Enviar al servidor
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    addMessage(data.response, false);
+                } else {
+                    addMessage('Error: ' + data.message, false);
+                }
+            })
+            .catch(error => {
+                addMessage('Error de conexión', false);
+            });
+        }
+
+        function addMessage(message, isUser) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${message.replace(/\n/g, '<br>')}
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function deleteContact(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar este contacto?')) {
+                window.location.href = '/delete_contact/' + id;
+            }
+        }
+    </script>
+</body>
+</html>

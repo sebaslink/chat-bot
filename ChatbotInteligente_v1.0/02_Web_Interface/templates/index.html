@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Cargador de Datos - Chatbot</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .stats-bar {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4facfe;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1.1em;
+            color: #6c757d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #4facfe;
+            border-bottom-color: #4facfe;
+        }
+
+        .tab:hover {
+            color: #4facfe;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border: 2px dashed #4facfe;
+            border-radius: 10px;
+            background: #f8f9ff;
+            color: #4facfe;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-button:hover {
+            background: #4facfe;
+            color: white;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(81, 207, 102, 0.4);
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4facfe;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .file-list {
+            margin-top: 15px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .file-icon {
+            margin-right: 10px;
+            color: #dc3545;
+        }
+
+        .text-area {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* Estilos para el chat */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+
+        .chat-stats {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            display: flex;
+            gap: 10px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .user-message .message-avatar {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .bot-message .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .message-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .message-text {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .user-message .message-text {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .message-time {
+            font-size: 0.75em;
+            color: #6c757d;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .user-message .message-time {
+            text-align: left;
+        }
+
+        .chat-input-container {
+            background: white;
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .chat-form {
+            margin-bottom: 15px;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #4facfe;
+        }
+
+        .chat-send-btn {
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        .chat-send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .chat-suggestions {
+            display: block;
+            margin-top: 10px;
+            padding: 15px;
+            background: rgba(79, 172, 254, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(79, 172, 254, 0.2);
+        }
+
+        .suggestions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .hide-suggestions-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .hide-suggestions-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #666;
+        }
+
+        .suggestions-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .suggestion-btn {
+            padding: 8px 16px;
+            border: 1px solid #4facfe;
+            border-radius: 20px;
+            background: transparent;
+            color: #4facfe;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .suggestion-btn:hover {
+            background: #4facfe;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .show-suggestions-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .show-suggestions-btn {
+            padding: 8px 16px;
+            border: 1px solid #4facfe;
+            border-radius: 20px;
+            background: transparent;
+            color: #4facfe;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .show-suggestions-btn:hover {
+            background: #4facfe;
+            color: white;
+        }
+
+        /* Estilos para Chat Masivo */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .feature-item i {
+            font-size: 2em;
+            color: #4facfe;
+            margin-bottom: 10px;
+        }
+
+        .feature-item h4 {
+            margin: 10px 0 5px 0;
+            color: #333;
+        }
+
+        .feature-item p {
+            font-size: 0.9em;
+            color: #666;
+            margin: 0;
+        }
+
+        .chat-masivo-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-large {
+            padding: 15px 30px;
+            font-size: 1.1em;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .config-section {
+            margin-top: 15px;
+        }
+
+        .config-section h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .status-label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .status-value {
+            font-weight: bold;
+            color: #4facfe;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .integration-info {
+            margin-top: 15px;
+        }
+
+        .integration-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .integration-list li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .integration-list i {
+            color: #28a745;
+            font-size: 1.1em;
+        }
+
+        .resource-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #6c757d;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                padding: 10px 15px;
+                font-size: 1em;
+            }
+
+            .chat-container {
+                height: 500px;
+            }
+
+            .message {
+                max-width: 90%;
+            }
+
+            .chat-suggestions {
+                justify-content: center;
+            }
+
+            .suggestion-btn {
+                font-size: 0.8em;
+                padding: 5px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-robot"></i> Cargador de Datos</h1>
+            <p>Sube PDFs, URLs y texto para entrenar tu chatbot</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number" id="total-docs">0</div>
+                <div class="stat-label">Documentos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="pdf-count">0</div>
+                <div class="stat-label">PDFs</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="web-count">0</div>
+                <div class="stat-label">URLs</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="manual-count">0</div>
+                <div class="stat-label">Manual</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('pdf-tab')">
+                    <i class="fas fa-file-pdf"></i> PDFs
+                </button>
+                <button class="tab" onclick="showTab('url-tab')">
+                    <i class="fas fa-globe"></i> URLs
+                </button>
+                <button class="tab" onclick="showTab('text-tab')">
+                    <i class="fas fa-edit"></i> Texto
+                </button>
+                <button class="tab" onclick="showTab('image-tab')">
+                    <i class="fas fa-image"></i> Imágenes
+                </button>
+                <button class="tab" onclick="showTab('documents-tab')">
+                    <i class="fas fa-file-alt"></i> Documentos
+                </button>
+                <button class="tab" onclick="showTab('directory-tab')">
+                    <i class="fas fa-folder"></i> Directorio
+                </button>
+                <button class="tab" onclick="showTab('chat-tab')">
+                    <i class="fas fa-comments"></i> Chat
+                </button>
+                <button class="tab" onclick="showTab('chat-masivo-tab')">
+                    <i class="fas fa-users"></i> Chat Masivo
+                </button>
+            </div>
+
+            <div id="alert-container"></div>
+
+            <!-- Tab PDFs -->
+            <div id="pdf-tab" class="tab-content active">
+                <div class="grid">
+                    <div class="card">
+                        <h3><i class="fas fa-upload"></i> Subir PDF Individual</h3>
+                        <form id="pdf-form">
+                            <div class="form-group">
+                                <label for="pdf-file">Selecciona un archivo PDF:</label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="pdf-file" class="file-input" accept=".pdf" required>
+                                    <div class="file-input-button">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Haz clic para seleccionar PDF</span>
+                                    </div>
+                                </div>
+                                <div id="pdf-file-list" class="file-list"></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Subir PDF
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-layer-group"></i> Subir Múltiples PDFs</h3>
+                        <form id="multiple-pdf-form">
+                            <div class="form-group">
+                                <label for="pdf-files">Selecciona múltiples PDFs:</label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="pdf-files" class="file-input" accept=".pdf" multiple required>
+                                    <div class="file-input-button">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Selecciona múltiples PDFs</span>
+                                    </div>
+                                </div>
+                                <div id="multiple-pdf-file-list" class="file-list"></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Subir PDFs
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab URLs -->
+            <div id="url-tab" class="tab-content">
+                <div class="card">
+                    <h3><i class="fas fa-globe"></i> Cargar desde URL</h3>
+                    <form id="url-form">
+                        <div class="form-group">
+                            <label for="url-input">URL de la página web:</label>
+                            <input type="url" id="url-input" class="form-control" 
+                                   placeholder="https://ejemplo.com/pagina" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="url-title">Título (opcional):</label>
+                            <input type="text" id="url-title" class="form-control" 
+                                   placeholder="Título personalizado">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-download"></i> Cargar URL
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab Texto -->
+            <div id="text-tab" class="tab-content">
+                <div class="card">
+                    <h3><i class="fas fa-edit"></i> Añadir Texto Manual</h3>
+                    <form id="text-form">
+                        <div class="form-group">
+                            <label for="text-title">Título del documento:</label>
+                            <input type="text" id="text-title" class="form-control" 
+                                   placeholder="Mi documento" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="text-source">Fuente:</label>
+                            <input type="text" id="text-source" class="form-control" 
+                                   placeholder="manual" value="manual">
+                        </div>
+                        <div class="form-group">
+                            <label for="text-content">Contenido:</label>
+                            <textarea id="text-content" class="form-control text-area" 
+                                      placeholder="Escribe aquí el contenido que quieres añadir al chatbot..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Añadir Texto
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab Imágenes -->
+            <div id="image-tab" class="tab-content">
+                <div class="grid">
+                    <div class="card">
+                        <h3><i class="fas fa-image"></i> Subir Imagen Individual</h3>
+                        <form id="image-form">
+                            <div class="form-group">
+                                <label for="image-file">Selecciona una imagen con texto:</label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="image-file" class="file-input" 
+                                           accept="image/*" required>
+                                    <div class="file-input-button">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Haz clic para seleccionar imagen</span>
+                                    </div>
+                                </div>
+                                <div id="image-file-list" class="file-list"></div>
+                                <small class="form-text text-muted">
+                                    Formatos soportados: JPG, PNG, GIF, BMP, TIFF
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="image-title">Título del documento:</label>
+                                <input type="text" id="image-title" class="form-control" 
+                                       placeholder="Mi imagen" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Procesar Imagen
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-layer-group"></i> Subir Múltiples Imágenes</h3>
+                        <form id="multiple-image-form">
+                            <div class="form-group">
+                                <label for="image-files">Selecciona múltiples imágenes:</label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="image-files" class="file-input" 
+                                           accept="image/*" multiple required>
+                                    <div class="file-input-button">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Selecciona múltiples imágenes</span>
+                                    </div>
+                                </div>
+                                <div id="multiple-image-file-list" class="file-list"></div>
+                                <small class="form-text text-muted">
+                                    Formatos soportados: JPG, PNG, GIF, BMP, TIFF
+                                </small>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Procesar Imágenes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Documentos -->
+            <div id="documents-tab" class="tab-content">
+                <div class="grid">
+                    <div class="card">
+                        <h3><i class="fas fa-file-word"></i> Subir Documento Individual</h3>
+                        <form id="document-form">
+                            <div class="form-group">
+                                <label for="document-file">Selecciona un documento:</label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="document-file" class="file-input" 
+                                           accept=".pdf,.docx,.pptx,.xlsx,.xls,.jpg,.jpeg,.png,.gif,.bmp,.tiff" required>
+                                    <div class="file-input-button">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Haz clic para seleccionar documento</span>
+                                    </div>
+                                </div>
+                                <div id="document-file-list" class="file-list"></div>
+                                <small class="form-text text-muted">
+                                    Formatos soportados: PDF, Word (.docx), PowerPoint (.pptx), Excel (.xlsx/.xls), Imágenes (JPG, PNG, GIF, BMP, TIFF)
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="document-title">Título del documento:</label>
+                                <input type="text" id="document-title" class="form-control" 
+                                       placeholder="Mi documento" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Procesar Documento
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-layer-group"></i> Subir Múltiples Documentos</h3>
+                        <form id="multiple-documents-form">
+                            <div class="form-group">
+                                <label for="documents-files">Selecciona múltiples documentos:</label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="documents-files" class="file-input" 
+                                           accept=".pdf,.docx,.pptx,.xlsx,.xls,.jpg,.jpeg,.png,.gif,.bmp,.tiff" multiple required>
+                                    <div class="file-input-button">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Selecciona múltiples documentos</span>
+                                    </div>
+                                </div>
+                                <div id="multiple-documents-file-list" class="file-list"></div>
+                                <small class="form-text text-muted">
+                                    Formatos soportados: PDF, Word (.docx), PowerPoint (.pptx), Excel (.xlsx/.xls), Imágenes (JPG, PNG, GIF, BMP, TIFF)
+                                </small>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Procesar Documentos
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Chat Masivo -->
+            <div id="chat-masivo-tab" class="tab-content">
+                <div class="grid">
+                    <div class="card">
+                        <h3><i class="fas fa-users"></i> Chat Masivo - Interfaz Avanzada</h3>
+                        <div class="chat-masivo-info">
+                            <p>🚀 <strong>Chat Masivo</strong> es una interfaz avanzada que combina todas las funcionalidades del chatbot con capacidades de chat masivo.</p>
+                            <div class="features-grid">
+                                <div class="feature-item">
+                                    <i class="fas fa-robot"></i>
+                                    <h4>Chatbot Inteligente</h4>
+                                    <p>Respuestas basadas en todos los documentos cargados</p>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-users"></i>
+                                    <h4>Chat Masivo</h4>
+                                    <p>Interfaz para múltiples usuarios y conversaciones</p>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-file-upload"></i>
+                                    <h4>Carga de Documentos</h4>
+                                    <p>Sube PDFs, Word, PowerPoint, Excel e imágenes</p>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-search"></i>
+                                    <h4>Búsqueda Avanzada</h4>
+                                    <p>Encuentra información en todos los documentos</p>
+                                </div>
+                            </div>
+                            <div class="chat-masivo-actions">
+                                <button class="btn btn-primary btn-large" onclick="openChatMasivo()">
+                                    <i class="fas fa-external-link-alt"></i> Abrir Chat Masivo
+                                </button>
+                                <button class="btn btn-secondary" onclick="showTab('chat-tab')">
+                                    <i class="fas fa-comments"></i> Usar Chat Simple
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-cogs"></i> Configuración del Chat Masivo</h3>
+                        <div class="config-section">
+                            <h4>📊 Estado del Sistema</h4>
+                            <div class="status-grid">
+                                <div class="status-item">
+                                    <span class="status-label">Contactos:</span>
+                                    <span class="status-value" id="masivo-contactos">-</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Mensajes Hoy:</span>
+                                    <span class="status-value" id="masivo-mensajes-hoy">-</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Grupos:</span>
+                                    <span class="status-value" id="masivo-grupos">-</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Estado:</span>
+                                    <span class="status-value" id="masivo-estado">-</span>
+                                </div>
+                            </div>
+                            
+                            <h4>🔧 Acciones Rápidas</h4>
+                            <div class="quick-actions">
+                                <button class="btn btn-success" onclick="refreshMasivoStats()">
+                                    <i class="fas fa-sync"></i> Actualizar Estado
+                                </button>
+                                <button class="btn btn-info" onclick="testMasivoConnection()">
+                                    <i class="fas fa-wifi"></i> Probar Conexión
+                                </button>
+                                <button class="btn btn-warning" onclick="openMasivoConfig()">
+                                    <i class="fas fa-cog"></i> Configuración
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-share-alt"></i> Integración de Recursos</h3>
+                    <div class="integration-info">
+                        <p>El Chat Masivo utiliza los mismos recursos que el chatbot principal:</p>
+                        <ul class="integration-list">
+                            <li><i class="fas fa-check"></i> Base de conocimientos compartida</li>
+                            <li><i class="fas fa-check"></i> Documentos procesados disponibles</li>
+                            <li><i class="fas fa-check"></i> Respuestas inteligentes basadas en contenido</li>
+                            <li><i class="fas fa-check"></i> Sistema de búsqueda unificado</li>
+                        </ul>
+                        
+                        <div class="resource-actions">
+                            <button class="btn btn-primary" onclick="syncResources()">
+                                <i class="fas fa-sync-alt"></i> Sincronizar Recursos
+                            </button>
+                            <button class="btn btn-secondary" onclick="showResourceStatus()">
+                                <i class="fas fa-info-circle"></i> Ver Estado de Recursos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Directorio -->
+            <div id="directory-tab" class="tab-content">
+                <div class="card">
+                    <h3><i class="fas fa-folder"></i> Cargar PDFs de Directorio</h3>
+                    <form id="directory-form">
+                        <div class="form-group">
+                            <label for="directory-path">Ruta del directorio:</label>
+                            <input type="text" id="directory-path" class="form-control" 
+                                   placeholder="C:\ruta\a\tu\directorio" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-folder-open"></i> Cargar Directorio
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab Chat -->
+            <div id="chat-tab" class="tab-content">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h3><i class="fas fa-robot"></i> Chatbot de Pruebas</h3>
+                        <div class="chat-stats">
+                            <span id="chat-doc-count">0 documentos</span>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message bot-message">
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-text">
+                                    ¡Hola! 👋 Soy tu chatbot personalizado. 
+                                    <br><br>
+                                    Puedo ayudarte con información sobre:
+                                    <br>• 📄 Documentos PDF que hayas subido
+                                    <br>• 🌐 Contenido de páginas web
+                                    <br>• ✏️ Texto que hayas escrito
+                                    <br><br>
+                                    <strong>¿Qué te gustaría saber?</strong>
+                                </div>
+                                <div class="message-time" id="welcome-time"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <form id="chat-form" class="chat-form">
+                            <div class="chat-input-wrapper">
+                                <input type="text" id="chat-input" class="chat-input" 
+                                       placeholder="Escribe tu pregunta aquí..." required>
+                                <button type="submit" class="chat-send-btn">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </form>
+                        <div class="chat-suggestions" id="chat-suggestions">
+                            <div class="suggestions-header">
+                                <span>💡 Sugerencias de preguntas:</span>
+                                <button class="hide-suggestions-btn" onclick="hideSuggestions()" title="Ocultar sugerencias">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="suggestions-buttons">
+                                <button class="suggestion-btn" onclick="sendSuggestion('¿Qué información tienes disponible?')">
+                                    📚 ¿Qué información tienes disponible?
+                                </button>
+                                <button class="suggestion-btn" onclick="sendSuggestion('Resume el contenido principal')">
+                                    📝 Resume el contenido principal
+                                </button>
+                                <button class="suggestion-btn" onclick="sendSuggestion('¿Cuántos documentos has procesado?')">
+                                    📊 ¿Cuántos documentos has procesado?
+                                </button>
+                                <button class="suggestion-btn" onclick="sendSuggestion('Dame un resumen de los temas principales')">
+                                    🎯 Temas principales
+                                </button>
+                                <button class="suggestion-btn" onclick="sendSuggestion('¿Qué puedes hacer por mí?')">
+                                    ❓ ¿Qué puedes hacer?
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="show-suggestions-container" id="show-suggestions-container" style="display: none;">
+                            <button class="show-suggestions-btn" onclick="showSuggestions()">
+                                <i class="fas fa-lightbulb"></i> Mostrar sugerencias
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Procesando...</p>
+            </div>
+
+            <div style="margin-top: 40px; text-align: center;">
+                <button onclick="clearAllData()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Limpiar Base de Datos
+                </button>
+                <button onclick="refreshStats()" class="btn btn-success">
+                    <i class="fas fa-refresh"></i> Actualizar Estadísticas
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mostrar/ocultar tabs
+        function showTab(tabId) {
+            // Ocultar todos los tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Mostrar tab seleccionado
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Mostrar alertas
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Mostrar/ocultar loading
+        function showLoading(show = true) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            fetch('/get_stats')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('total-docs').textContent = data.total_documents || 0;
+                    
+                    const sources = data.sources || {};
+                    document.getElementById('pdf-count').textContent = sources.pdf || 0;
+                    document.getElementById('web-count').textContent = sources.web || 0;
+                    document.getElementById('manual-count').textContent = sources.manual || 0;
+                })
+                .catch(error => {
+                    console.error('Error actualizando estadísticas:', error);
+                });
+        }
+
+        // Refrescar estadísticas
+        function refreshStats() {
+            updateStats();
+            showAlert('Estadísticas actualizadas', 'success');
+        }
+
+        // Manejar archivos PDF individuales
+        document.getElementById('pdf-file').addEventListener('change', function(e) {
+            const fileList = document.getElementById('pdf-file-list');
+            fileList.innerHTML = '';
+            
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <i class="fas fa-file-pdf file-icon"></i>
+                    <span>${file.name}</span>
+                `;
+                fileList.appendChild(fileItem);
+            }
+        });
+
+        // Manejar múltiples archivos PDF
+        document.getElementById('pdf-files').addEventListener('change', function(e) {
+            const fileList = document.getElementById('multiple-pdf-file-list');
+                fileList.innerHTML = '';
+            
+            if (e.target.files.length > 0) {
+                Array.from(e.target.files).forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <i class="fas fa-file-pdf file-icon"></i>
+                        <span>${file.name}</span>
+                    `;
+                    fileList.appendChild(fileItem);
+                });
+            }
+        });
+
+        // Formulario PDF individual
+        document.getElementById('pdf-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('pdf-file');
+            if (!fileInput.files[0]) {
+                showAlert('Por favor selecciona un archivo PDF', 'danger');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            showLoading(true);
+
+            fetch('/upload_pdf', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showLoading(false);
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    updateStats();
+                    fileInput.value = '';
+                    document.getElementById('pdf-file-list').innerHTML = '';
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showLoading(false);
+                showAlert('Error al subir el archivo', 'danger');
+                console.error('Error:', error);
+            });
+        });
+
+        // Formulario múltiples PDFs
+        document.getElementById('multiple-pdf-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('pdf-files');
+            if (!fileInput.files[0]) {
+                showAlert('Por favor selecciona al menos un archivo PDF', 'danger');
+                return;
+            }
+
+            const formData = new FormData();
+            Array.from(fileInput.files).forEach(file => {
+                formData.append('files', file);
+            });
+
+            showLoading(true);
+
+            fetch('/upload_multiple_pdfs', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showLoading(false);
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    updateStats();
+                    fileInput.value = '';
+                    document.getElementById('multiple-pdf-file-list').innerHTML = '';
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showLoading(false);
+                showAlert('Error al subir los archivos', 'danger');
+                console.error('Error:', error);
+            });
+        });
+
+        // Formulario URL
+        document.getElementById('url-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const url = document.getElementById('url-input').value;
+            const title = document.getElementById('url-title').value;
+
+            showLoading(true);
+
+            fetch('/add_url', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url, title })
+            })
+            .then(response => response.json())
+            .then(data => {
+                showLoading(false);
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    updateStats();
+                    document.getElementById('url-form').reset();
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showLoading(false);
+                showAlert('Error al cargar la URL', 'danger');
+                console.error('Error:', error);
+            });
+        });
+
+        // Formulario texto
+        document.getElementById('text-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const content = document.getElementById('text-content').value;
+            const title = document.getElementById('text-title').value;
+            const source = document.getElementById('text-source').value;
+
+            showLoading(true);
+
+            fetch('/add_text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content, title, source })
+            })
+            .then(response => response.json())
+            .then(data => {
+                showLoading(false);
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    updateStats();
+                    document.getElementById('text-form').reset();
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showLoading(false);
+                showAlert('Error al añadir el texto', 'danger');
+                console.error('Error:', error);
+            });
+        });
+
+        // Manejar archivos de imagen individuales
+        document.getElementById('image-file').addEventListener('change', function(e) {
+            const fileList = document.getElementById('image-file-list');
+            fileList.innerHTML = '';
+            
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <i class="fas fa-image"></i>
+                    <span>${file.name}</span>
+                    <span class="file-size">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                `;
+                fileList.appendChild(fileItem);
+            }
+        });
+
+        // Manejar múltiples archivos de imagen
+        document.getElementById('image-files').addEventListener('change', function(e) {
+            const fileList = document.getElementById('multiple-image-file-list');
+            fileList.innerHTML = '';
+            
+            if (e.target.files.length > 0) {
+                Array.from(e.target.files).forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <i class="fas fa-image"></i>
+                        <span>${file.name}</span>
+                        <span class="file-size">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                    `;
+                    fileList.appendChild(fileItem);
+                });
+            }
+        });
+
+        // Formulario imagen individual
+        document.getElementById('image-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('image-file');
+            const titleInput = document.getElementById('image-title');
+            
+            if (!fileInput.files[0]) {
+                showAlert('Por favor selecciona una imagen', 'danger');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('title', titleInput.value);
+
+            showLoading(true);
+
+            fetch('/upload_image', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showLoading(false);
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    updateStats();
+                    document.getElementById('image-form').reset();
+                    document.getElementById('image-file-list').innerHTML = '';
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showLoading(false);
+                showAlert('Error al procesar la imagen', 'danger');
+                console.error('Error:', error);
+            });
+        });
+
+        // Formulario múltiples imágenes
+        document.getElementById('multiple-image-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('image-files');
+            if (!fileInput.files[0]) {
+                showAlert('Por favor selecciona al menos una imagen', 'danger');
+                return;
+            }
+
+            const formData = new FormData();
+            Array.from(fileInput.files).forEach(file => {
+                formData.append('files', file);
+            });
+
+            showLoading(true);
+
+            fetch('/upload_multiple_images', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showLoading(false);
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    updateStats();
+                    document.getElementById('multiple-image-form').reset();
+                    document.getElementById('multiple-image-file-list').innerHTML = '';
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showLoading(false);
+                showAlert('Error al procesar las imágenes', 'danger');
+                console.error('Error:', error);
+            });
+        });
+
+        // Manejar archivos de documento individuales
+        document.getElementById('document-file').addEventListener('change', function(e) {
+            const fileList = document.getElementById('document-file-list');
+            fileList.innerHTML = '';
+            
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                // Determinar el icono basado en la extensión
+                const extension = file.name.split('.').pop().toLowerCase();
+                let icon = 'fas fa-file';
+                if (extension === 'pdf') icon = 'fas fa-file-pdf';
+                else if (extension === 'docx') icon = 'fas fa-file-word';
+                else if (extension === 'pptx') icon = 'fas fa-file-powerpoint';
+                else if (['xlsx', 'xls'].includes(extension)) icon = 'fas fa-file-excel';
+                else if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff'].includes(extension)) icon = 'fas fa-image';
+                
+                fileItem.innerHTML = `
+                    <i class="${icon}"></i>
+                    <span>${file.name}</span>
+                    <span class="file-size">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                `;
+                fileList.appendChild(fileItem);
+            }
+        });
+
+        // Manejar múltiples archivos de documentos
+        document.getElementById('documents-files').addEventListener('change', function(e) {
+            const fileList = document.getElementById('multiple-documents-file-list');
+            fileList.innerHTML = '';
+            
+            if (e.target.files.length > 0) {
+                Array.from(e.target.files).forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    
+                    // Determinar el icono basado en la extensión
+                    const extension = file.name.split('.').pop().toLowerCase();
+                    let icon = 'fas fa-file';
+                    if (extension === 'pdf') icon = 'fas fa-file-pdf';
+                    else if (extension === 'docx') icon = 'fas fa-file-word';
+                    else if (extension === 'pptx') icon = 'fas fa-file-powerpoint';
+                    else if (['xlsx', 'xls'].includes(extension)) icon = 'fas fa-file-excel';
+                    else if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff'].includes(extension)) icon = 'fas fa-image';
+                    
+                    fileItem.innerHTML = `
+                        <i class="${icon}"></i>
+                        <span>${file.name}</span>
+                        <span class="file-size">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                    `;
+                    fileList.appendChild(fileItem);
+                });
+            }
+        });
+
+        // Formulario documento individual
+        document.getElementById('document-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('document-file');
+            const titleInput = document.getElementById('document-title');
+            
+            if (!fileInput.files[0]) {
+                showAlert('Por favor selecciona un documento', 'danger');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('title', titleInput.value);
+
+            showLoading(true);
+
+            fetch('/upload_document', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showLoading(false);
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    updateStats();
+                    document.getElementById('document-form').reset();
+                    document.getElementById('document-file-list').innerHTML = '';
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showLoading(false);
+                showAlert('Error al procesar el documento', 'danger');
+                console.error('Error:', error);
+            });
+        });
+
+        // Formulario múltiples documentos
+        document.getElementById('multiple-documents-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('documents-files');
+            if (!fileInput.files[0]) {
+                showAlert('Por favor selecciona al menos un documento', 'danger');
+                return;
+            }
+
+            const formData = new FormData();
+            Array.from(fileInput.files).forEach(file => {
+                formData.append('files', file);
+            });
+
+            showLoading(true);
+
+            fetch('/upload_multiple_documents', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showLoading(false);
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    updateStats();
+                    document.getElementById('multiple-documents-form').reset();
+                    document.getElementById('multiple-documents-file-list').innerHTML = '';
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showLoading(false);
+                showAlert('Error al procesar los documentos', 'danger');
+                console.error('Error:', error);
+            });
+        });
+
+        // Formulario directorio
+        document.getElementById('directory-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const directoryPath = document.getElementById('directory-path').value;
+
+            showLoading(true);
+
+            fetch('/load_directory', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ directory_path: directoryPath })
+            })
+            .then(response => response.json())
+            .then(data => {
+                showLoading(false);
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    updateStats();
+                    document.getElementById('directory-form').reset();
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showLoading(false);
+                showAlert('Error al cargar el directorio', 'danger');
+                console.error('Error:', error);
+            });
+        });
+
+        // Limpiar base de datos
+        function clearAllData() {
+            if (confirm('¿Estás seguro de que quieres limpiar toda la base de datos? Esta acción no se puede deshacer.')) {
+                showLoading(true);
+                
+                fetch('/clear_data', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    showLoading(false);
+                    if (data.success) {
+                        showAlert(data.message, 'success');
+                        updateStats();
+                    } else {
+                        showAlert(data.message, 'danger');
+                    }
+                })
+                .catch(error => {
+                    showLoading(false);
+                    showAlert('Error al limpiar la base de datos', 'danger');
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        // Funcionalidad del chat
+        let chatHistory = [];
+
+        function addMessageToChat(message, isUser = false) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            
+            const currentTime = new Date().toLocaleTimeString('es-ES', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas ${isUser ? 'fa-user' : 'fa-robot'}"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">${message}</div>
+                    <div class="message-time">${currentTime}</div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chat-messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot-message typing-indicator';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">
+                        <span>Escribiendo</span>
+                        <div class="typing-dots">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            typingDiv.style.display = 'flex';
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function sendChatMessage(message) {
+            // Añadir mensaje del usuario
+            addMessageToChat(message, true);
+            chatHistory.push({ role: 'user', content: message });
+            
+            // Ocultar sugerencias cuando se envía un mensaje
+            hideSuggestions();
+            
+            // Mostrar indicador de escritura
+            showTypingIndicator();
+            
+            // Enviar al servidor
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideTypingIndicator();
+                if (data.success) {
+                    addMessageToChat(data.response, false);
+                    chatHistory.push({ role: 'bot', content: data.response });
+                } else {
+                    addMessageToChat('Lo siento, hubo un error procesando tu mensaje.', false);
+                }
+            })
+            .catch(error => {
+                hideTypingIndicator();
+                addMessageToChat('Error de conexión. Intenta de nuevo.', false);
+                console.error('Error:', error);
+            });
+        }
+
+        function sendSuggestion(suggestion) {
+            document.getElementById('chat-input').value = suggestion;
+            sendChatMessage(suggestion);
+            // Ocultar sugerencias después de enviar
+            hideSuggestions();
+        }
+
+        function hideSuggestions() {
+            const suggestions = document.getElementById('chat-suggestions');
+            const showContainer = document.getElementById('show-suggestions-container');
+            if (suggestions) {
+                suggestions.style.display = 'none';
+            }
+            if (showContainer) {
+                showContainer.style.display = 'block';
+            }
+        }
+
+        function showSuggestions() {
+            const suggestions = document.getElementById('chat-suggestions');
+            const showContainer = document.getElementById('show-suggestions-container');
+            if (suggestions) {
+                suggestions.style.display = 'block';
+            }
+            if (showContainer) {
+                showContainer.style.display = 'none';
+            }
+        }
+
+        function updateChatStats() {
+            fetch('/get_stats')
+                .then(response => response.json())
+                .then(data => {
+                    const docCount = data.total_documents || 0;
+                    document.getElementById('chat-doc-count').textContent = `${docCount} documentos`;
+                })
+                .catch(error => {
+                    console.error('Error actualizando estadísticas del chat:', error);
+                });
+        }
+
+        // Formulario del chat
+        document.getElementById('chat-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const message = document.getElementById('chat-input').value.trim();
+            if (message) {
+                sendChatMessage(message);
+                document.getElementById('chat-input').value = '';
+            }
+        });
+
+        // Enviar mensaje con Enter
+        document.getElementById('chat-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const message = this.value.trim();
+                if (message) {
+                    sendChatMessage(message);
+                    this.value = '';
+                }
+            }
+        });
+
+        // Actualizar estadísticas del chat cuando se cambia a la pestaña
+        function showTab(tabId) {
+            // Ocultar todos los tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Mostrar tab seleccionado
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Actualizar estadísticas del chat si es la pestaña de chat
+            if (tabId === 'chat-tab') {
+                updateChatStats();
+            }
+        }
+
+        // Funciones para Chat Masivo
+        function openChatMasivo() {
+            // Abrir el chat masivo en una nueva ventana
+            window.open('http://localhost:5001', '_blank');
+        }
+
+        function refreshMasivoStats() {
+            showLoading(true);
+            
+            // Simular obtención de estadísticas del chat masivo
+            fetch('/api/masivo_stats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('masivo-contactos').textContent = data.contactos || '0';
+                        document.getElementById('masivo-mensajes-hoy').textContent = data.mensajes_hoy || '0';
+                        document.getElementById('masivo-grupos').textContent = data.grupos || '0';
+                        document.getElementById('masivo-estado').textContent = data.estado || 'Desconocido';
+                        showAlert('Estadísticas del Chat Masivo actualizadas', 'success');
+                    } else {
+                        showAlert('Error obteniendo estadísticas del Chat Masivo', 'danger');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Error de conexión con Chat Masivo', 'danger');
+                    console.error('Error:', error);
+                })
+                .finally(() => {
+                    showLoading(false);
+                });
+        }
+
+        function testMasivoConnection() {
+            showLoading(true);
+            
+            fetch('/api/masivo_test')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('Conexión con Chat Masivo exitosa', 'success');
+                        document.getElementById('masivo-estado').textContent = 'Conectado';
+                    } else {
+                        showAlert('Error de conexión con Chat Masivo', 'danger');
+                        document.getElementById('masivo-estado').textContent = 'Error';
+                    }
+                })
+                .catch(error => {
+                    showAlert('No se pudo conectar con Chat Masivo', 'danger');
+                    document.getElementById('masivo-estado').textContent = 'Desconectado';
+                    console.error('Error:', error);
+                })
+                .finally(() => {
+                    showLoading(false);
+                });
+        }
+
+        function openMasivoConfig() {
+            // Abrir configuración del chat masivo
+            window.open('http://localhost:5001', '_blank');
+        }
+
+        function syncResources() {
+            showLoading(true);
+            
+            fetch('/api/sync_resources', {
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('Recursos sincronizados exitosamente', 'success');
+                        updateStats();
+                    } else {
+                        showAlert('Error sincronizando recursos', 'danger');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Error de conexión durante sincronización', 'danger');
+                    console.error('Error:', error);
+                })
+                .finally(() => {
+                    showLoading(false);
+                });
+        }
+
+        function showResourceStatus() {
+            const stats = {
+                documentos: document.getElementById('total-docs').textContent,
+                pdfs: document.getElementById('pdf-count').textContent,
+                urls: document.getElementById('web-count').textContent,
+                manual: document.getElementById('manual-count').textContent
+            };
+            
+            const message = `Estado de Recursos:
+📄 Documentos totales: ${stats.documentos}
+📋 PDFs: ${stats.pdfs}
+🌐 URLs: ${stats.urls}
+✏️ Manual: ${stats.manual}
+
+Estos recursos están disponibles tanto en el chatbot como en el chat masivo.`;
+            
+            alert(message);
+        }
+
+        // Cargar estadísticas al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            updateChatStats();
+            
+            // Establecer hora del mensaje de bienvenida
+            const welcomeTime = new Date().toLocaleTimeString('es-ES', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('welcome-time').textContent = welcomeTime;
+            
+            // Cargar estadísticas del chat masivo si está disponible
+            refreshMasivoStats();
+        });
+    </script>
+</body>
+</html>

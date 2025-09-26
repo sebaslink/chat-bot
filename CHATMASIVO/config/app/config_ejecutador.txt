@@ -1,0 +1,20 @@
+# Configuracion del Ejecutador Chat Masivo WhatsApp
+# Modifica estos valores segun tus necesidades
+
+# Puerto del servidor (por defecto: 5000)
+PUERTO=5000
+
+# Host del servidor (por defecto: 0.0.0.0 para acceso desde red local)
+HOST=0.0.0.0
+
+# Modo debug (true/false)
+DEBUG=true
+
+# Version por defecto (simple/demo/completa)
+VERSION_DEFAULT=simple
+
+# Instalar dependencias automaticamente (true/false)
+AUTO_INSTALL=true
+
+# Mostrar mensajes detallados (true/false)
+VERBOSE=true

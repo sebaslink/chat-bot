@@ -1,0 +1,7 @@
+# Configuración de OpenAI
+OPENAI_API_KEY=tu_clave_api_aqui
+
+# Configuración opcional
+# VECTOR_DB_PATH=vector_db
+# EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+# CHAT_MODEL=gpt-3.5-turbo

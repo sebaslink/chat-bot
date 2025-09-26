@@ -1,0 +1,20 @@
+CONFIGURACIÓN WHATSAPP SANDBOX DE TWILIO
+==================================================
+
+NÚMERO DE WHATSAPP SANDBOX: +15005550009
+NÚMERO DE TWILIO: +1 415 523 8886
+
+PASOS PARA CONFIGURAR:
+1. Abrir WhatsApp en tu teléfono
+2. Enviar mensaje a: +1 415 523 8886
+3. Escribir: join grandfather-either
+4. Reemplazar <palabra-clave> con la palabra de Twilio
+5. Enviar el mensaje
+6. Recibir confirmación
+
+ENLACES:
+- Consola: https://console.twilio.com/
+- WhatsApp Sandbox: https://console.twilio.com/us1/develop/sms/senders/whatsapp
+- Documentación: https://www.twilio.com/docs/whatsapp/sandbox
+
+NOTA: Solo para desarrollo. Para producción necesitas un número real.

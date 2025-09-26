@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Unificado - Navegación</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container { 
+            max-width: 1200px; 
+            width: 100%;
+            background: white; 
+            border-radius: 20px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+            overflow: hidden;
+        }
+        .header { 
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+            color: white; 
+            padding: 40px; 
+            text-align: center; 
+        }
+        .header h1 { font-size: 3em; margin-bottom: 15px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .main-content {
+            padding: 60px 40px;
+        }
+        
+        .navigation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .nav-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border-color: #4facfe;
+        }
+        
+        .nav-card i {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #4facfe;
+        }
+        
+        .nav-card h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .nav-card p {
+            font-size: 1.1em;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .features-list {
+            text-align: left;
+            margin: 20px 0;
+        }
+        
+        .features-list li {
+            margin: 8px 0;
+            color: #555;
+        }
+        
+        .features-list i {
+            color: #51cf66;
+            margin-right: 8px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+        }
+        
+        .stats-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #4facfe;
+        }
+        
+        .stat-card h3 {
+            font-size: 2em;
+            color: #4facfe;
+            margin: 0;
+        }
+        
+        .stat-card p {
+            color: #666;
+            margin: 5px 0 0 0;
+        }
+        
+        .footer {
+            background: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-robot"></i> Sistema Unificado</h1>
+            <p>Chatbot Inteligente + Chat Masivo Integrado</p>
+        </div>
+
+        <div class="main-content">
+            <div class="navigation-grid">
+                <!-- Card Chatbot -->
+                <a href="/chatbot" class="nav-card">
+                    <i class="fas fa-robot"></i>
+                    <h2>Chatbot Inteligente</h2>
+                    <p>Sistema de chat inteligente con base de conocimientos avanzada</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> Carga de documentos (PDF, Word, texto)</li>
+                        <li><i class="fas fa-check"></i> Respuestas inteligentes basadas en contenido</li>
+                        <li><i class="fas fa-check"></i> Búsqueda avanzada en documentos</li>
+                        <li><i class="fas fa-check"></i> Interfaz de chat moderna</li>
+                        <li><i class="fas fa-check"></i> Procesamiento de imágenes con OCR</li>
+                    </ul>
+                    <div class="btn">Abrir Chatbot</div>
+                </a>
+
+                <!-- Card Chat Masivo -->
+                <a href="/chatmasivo" class="nav-card">
+                    <i class="fas fa-users"></i>
+                    <h2>Chat Masivo</h2>
+                    <p>Sistema de mensajería masiva con gestión de contactos</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> Gestión de contactos y grupos</li>
+                        <li><i class="fas fa-check"></i> Envío de mensajes masivos</li>
+                        <li><i class="fas fa-check"></i> Personalización automática de mensajes</li>
+                        <li><i class="fas fa-check"></i> Integración con base de conocimientos</li>
+                        <li><i class="fas fa-check"></i> Estadísticas y reportes</li>
+                    </ul>
+                    <div class="btn">Abrir Chat Masivo</div>
+                </a>
+            </div>
+
+            <div class="stats-section">
+                <h3 style="text-align: center; margin-bottom: 20px; color: #333;">
+                    <i class="fas fa-chart-bar"></i> Estado del Sistema
+                </h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="total-docs">-</h3>
+                        <p>Documentos Cargados</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="total-contacts">-</h3>
+                        <p>Contactos Registrados</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="total-groups">-</h3>
+                        <p>Grupos Activos</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="system-status">✅</h3>
+                        <p>Estado del Sistema</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Sistema Unificado - Desarrollado con IA</p>
+        </div>
+    </div>
+
+    <script>
+        // Cargar estadísticas del sistema
+        function loadStats() {
+            // Simular carga de estadísticas
+            document.getElementById('total-docs').textContent = '0';
+            document.getElementById('total-contacts').textContent = '0';
+            document.getElementById('total-groups').textContent = '6';
+            document.getElementById('system-status').textContent = '✅';
+        }
+
+        // Cargar estadísticas al iniciar
+        loadStats();
+    </script>
+</body>
+</html>

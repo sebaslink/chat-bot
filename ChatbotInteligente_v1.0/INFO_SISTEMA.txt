@@ -1,0 +1,140 @@
+# INFORMACIÓN DEL SISTEMA - CHATBOT INTELIGENTE v1.0
+
+**Fecha de actualización:** 25 de Septiembre de 2025
+**Sistema operativo:** Windows_NT
+**Arquitectura:** AMD64
+**Usuario:** USER
+**Directorio:** D:\sebastian\documentos\chat bot\ChatbotInteligente_v1.0
+
+## SISTEMA UNIFICADO FINAL - CHATBOT Y CHAT MASIVO
+Sistema Completo con Login y Control de Acceso
+Versión: 1.0 - ACTUALIZADA
+Fecha: 25 de Septiembre de 2025
+
+## FUNCIONALIDADES PRINCIPALES:
+- Chat Inteligente con IA
+- Carga de Documentos (PDF, Word, Excel, PowerPoint, Imágenes)
+- Extracción de contenido web
+- Chat Masivo por WhatsApp
+- Base de datos integrada
+- Gestión de usuarios
+- Interfaz web moderna y responsive
+
+## SISTEMA DE LOGIN IMPLEMENTADO:
+- Control de acceso por roles de usuario
+- Asesores: Acceso directo al Chat Masivo original
+- Administradores/Programadores: Acceso completo al sistema
+- Redirección automática según rol implementada
+- Gestión de sesiones segura
+- Página de login para todos los usuarios
+
+## URLS DEL SISTEMA:
+- URL Principal: http://localhost:5000 (página de login)
+- URL Login: http://localhost:5000/login
+- URL Chat Masivo: http://localhost:5001 (aplicación original)
+- URL Chatbot: http://localhost:5000/chatbot (para administradores/programadores)
+- Redirección automática según rol después del login
+
+## USUARIOS POR DEFECTO:
+- Usuario: admin / Contraseña: admin123 / Rol: Administrativo
+- Usuario: jperez / Contraseña: 123456 / Rol: Asesor
+
+## INSTRUCCIONES DE USO:
+1. Ejecutar EJECUTAR_CHATBOT_FINAL.bat
+2. El sistema se abrirá automáticamente en tu navegador
+3. Serás redirigido a la página de login
+4. Usa las credenciales por defecto o crea un nuevo usuario
+5. El sistema redirigirá automáticamente según tu rol
+
+## GESTIÓN DE USUARIOS:
+1. Como administrador, ve a la pestaña "Usuarios"
+2. Crea usuarios con diferentes roles:
+   - Asesor: Solo acceso al Chat Masivo
+   - Administrador: Acceso completo al sistema
+   - Programador: Acceso completo al sistema
+
+## USO DEL SISTEMA:
+1. ASESORES: Van directamente al Chat Masivo original
+2. ADMINISTRADORES/PROGRAMADORES: Acceso completo al Chatbot
+3. Sube documentos en la pestaña "Documentos"
+4. Usa la pestaña "Chat" para conversar con la IA
+5. Gestiona la base de datos en la pestaña "Base de Datos"
+6. Accede al Chat Masivo desde el botón correspondiente
+
+## CORRECCIONES IMPLEMENTADAS:
+- Error "require_auth not defined" corregido
+- Decoradores movidos al inicio del archivo
+- Protección de todas las rutas sensibles
+- Peticiones frontend con credenciales incluidas
+- Redirección de asesores corregida
+- Página del Chat Masivo con información del usuario
+- Error de JSON en botón Chat Masivo solucionado
+- Interfaz en blanco del Chat Masivo corregida
+- Ruta /abrir_chatmasivo simplificada
+- Interfaz original del Chat Masivo funcionando
+- Redirección al Chat Masivo original (puerto 5001)
+- Inicio automático del Chat Masivo original
+- Sistema de roles corregido completamente
+- Asesores van directamente al Chat Masivo
+- Administradores/Programadores van al Chatbot completo
+- Redirección automática según rol implementada
+- Chat Masivo original funcionando en puerto 5001
+- Sistema de login completamente funcional
+
+## BASE DE DATOS MEJORADA:
+- Visualización completa de la base de datos
+- Estadísticas en tiempo real
+- Gestión de usuarios integrada
+- Tabla de usuarios con información detallada
+- Exportación y backup de datos
+
+## ESTADO ACTUAL DEL SISTEMA:
+- Sistema completamente funcional
+- Login implementado y funcionando
+- Redirección por roles operativa
+- Chat Masivo original integrado
+- Ambos servidores ejecutándose correctamente
+- Imágenes y recursos cargados
+- Sistema de seguridad robusto
+- Interfaz unificada y moderna
+
+## ARCHIVOS PRINCIPALES ACTUALIZADOS:
+- SISTEMA_UNIFICADO_FINAL.py (Sistema principal actualizado)
+- EJECUTAR_CHATBOT_FINAL.bat (Ejecutable principal actualizado)
+- EJECUTAR_CHATBOT_CORREGIDO.bat (Ejecutable alternativo)
+- requirements_completo.txt (Dependencias completas)
+- README_ACTUALIZADO.md (Documentación completa)
+- CHANGELOG_v1.0.md (Historial de cambios)
+- INFO_SISTEMA_ACTUALIZADO.txt (Información detallada)
+- INSTALAR_SISTEMA_COMPLETO.bat (Instalador automático)
+
+## CARPETAS INCLUIDAS:
+- 01_Core_Chatbot
+- 02_Web_Interface
+- 04_Documentation
+- 05_Data
+- 06_Utilities
+- 07_Old_Versions
+- CHATMASIVO (Chat Masivo original)
+- templates (Plantillas HTML actualizadas)
+- static (Recursos estáticos)
+- data (Base de datos con usuarios)
+
+## ARCHIVOS DE INICIO:
+- EJECUTAR_CHATBOT_FINAL.bat (Recomendado)
+- EJECUTAR_CHATBOT_CORREGIDO.bat (Alternativo)
+- INSTALAR_SISTEMA_COMPLETO.bat (Instalador)
+- INICIAR_SISTEMA.bat (Inicio rápido)
+
+## REQUISITOS DEL SISTEMA:
+- Sistema operativo: Windows 10/11
+- Python: 3.8 o superior
+- Navegador: Chrome, Firefox, Edge (últimas versiones)
+- Memoria RAM: Mínimo 4GB, recomendado 8GB
+- Espacio en disco: Mínimo 2GB libres
+
+## SOPORTE:
+- Versión: 1.0
+- Estado: Completamente funcional
+- Última actualización: 25 de Septiembre de 2025
+- Compatibilidad: Windows 10/11, Python 3.8+

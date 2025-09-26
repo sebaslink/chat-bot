@@ -1,0 +1,108 @@
+# GitLab CI/CD Pipeline para Chat Masivo WhatsApp
+
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip/
+    - venv/
+
+# Instalar dependencias
+install_dependencies:
+  stage: test
+  image: python:3.9
+  before_script:
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install --upgrade pip
+  script:
+    - pip install -r requirements.txt
+    - echo "Dependencias instaladas correctamente"
+  only:
+    - main
+    - develop
+
+# Verificar sintaxis de Python
+lint_python:
+  stage: test
+  image: python:3.9
+  before_script:
+    - source venv/bin/activate
+  script:
+    - pip install flake8
+    - flake8 --exclude=venv,__pycache__ --max-line-length=120 .
+  allow_failure: true
+  only:
+    - main
+    - develop
+
+# Verificar que no hay credenciales expuestas
+security_check:
+  stage: test
+  image: python:3.9
+  script:
+    - echo "Verificando que no hay credenciales expuestas..."
+    - if grep -r "AC[a-f0-9]\{32\}" . --exclude-dir=.git --exclude-dir=venv; then exit 1; fi
+    - if grep -r "[a-f0-9]\{32\}" . --exclude-dir=.git --exclude-dir=venv --exclude="*.md"; then exit 1; fi
+    - echo "✅ No se encontraron credenciales expuestas"
+  only:
+    - main
+    - develop
+
+# Construir imagen Docker (opcional)
+build_docker:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+  only:
+    - main
+  when: manual
+
+# Desplegar a Railway (opcional)
+deploy_railway:
+  stage: deploy
+  image: python:3.9
+  before_script:
+    - pip install railway
+  script:
+    - echo "Desplegando a Railway..."
+    - python subir_a_railway.py
+  only:
+    - main
+  when: manual
+
+# Desplegar a Render (opcional)
+deploy_render:
+  stage: deploy
+  image: python:3.9
+  before_script:
+    - pip install requests
+  script:
+    - echo "Desplegando a Render..."
+    - python subir_a_render_v2.py
+  only:
+    - main
+  when: manual
+
+# Notificación de éxito
+notify_success:
+  stage: deploy
+  image: python:3.9
+  script:
+    - echo "✅ Pipeline completado exitosamente"
+    - echo "🚀 El sistema está listo para usar"
+  only:
+    - main
+  when: on_success

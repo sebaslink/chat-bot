@@ -1,0 +1,18 @@
+CONFIGURACIÓN DE WHATSAPP PARA TWILIO
+==================================================
+
+Número de Twilio: +TU_NUMERO_TWILIO
+Account SID: TU_ACCOUNT_SID_AQUI
+Auth Token: TU_AUTH_TOKEN_AQUI
+
+PASOS PARA CONFIGURAR WHATSAPP:
+1. Ir a: https://console.twilio.com/
+2. Navegar a: Messaging > Senders > WhatsApp senders
+3. Hacer clic en: Add sender
+4. Seleccionar número: +TU_NUMERO_TWILIO
+5. Seguir proceso de verificación
+
+ENLACES ÚTILES:
+- Consola: https://console.twilio.com/
+- WhatsApp Senders: https://console.twilio.com/us1/develop/sms/senders/whatsapp
+- Documentación: https://www.twilio.com/docs/whatsapp

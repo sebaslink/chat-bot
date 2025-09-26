@@ -1,0 +1,52 @@
+# Chatbot Inteligente v1.0 - Dependencias Completas
+# Sistema Unificado con Login y Control de Acceso
+
+# Framework Web
+Flask==2.3.3
+Flask-CORS==4.0.0
+
+# Procesamiento de Documentos
+PyPDF2==3.0.1
+python-docx==0.8.11
+openpyxl==3.1.2
+python-pptx==0.6.21
+Pillow==10.0.1
+
+# Procesamiento de Texto y IA
+openai==1.3.0
+tiktoken==0.5.1
+sentence-transformers==2.2.2
+numpy==1.24.3
+scikit-learn==1.3.0
+
+# Base de Datos
+sqlite3
+
+# Web Scraping
+requests==2.31.0
+beautifulsoup4==4.12.2
+lxml==4.9.3
+
+# Utilidades
+python-dotenv==1.0.0
+werkzeug==2.3.7
+gunicorn==21.2.0
+
+# Chat Masivo (Twilio)
+twilio==8.10.0
+
+# Procesamiento de Archivos
+chardet==5.2.0
+python-magic==0.4.27
+
+# Logging y Monitoreo
+colorlog==6.7.0
+
+# Seguridad
+bcrypt==4.0.1
+cryptography==41.0.4
+
+# Desarrollo
+pytest==7.4.2
+black==23.7.0
+flake8==6.0.0
